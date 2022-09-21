@@ -4,9 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Floor1
-  - Floor2
   - DeathLine
+  - Normal
+  - Nails
   layers:
   - Default
   - TransparentFX

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    float moveSpeed = 0.5f;
+    [SerializeField] float moveSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,12 +27,12 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Floor1")
+        if (collision.transform.tag == "Normal")
         {
-            Debug.Log("碰到(Object)tag1");
-        } else if (collision.transform.tag == "Floor2")
+            Debug.Log("碰到(Object)Normal");
+        } else if (collision.transform.tag == "Nails")
         {
-            Debug.Log("碰到(Object)tag2");
+            Debug.Log("碰到(Object)Nails");
         }         
     }
 
