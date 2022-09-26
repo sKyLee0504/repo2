@@ -6,6 +6,8 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 public class Player : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
+    [SerializeField] int Hp;
+    [SerializeField] GameObject HpBar;
 
     // 创建目前脚下阶梯的变量
     GameObject currentFloor;
@@ -13,7 +15,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Hp = 10;
     }
 
     // Update is called once per frame
@@ -38,6 +40,7 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("碰到Normal");
                 currentFloor = collision.gameObject;
+                ModifyHp(1);
             }
         } else if (collision.transform.tag == "Nails")
         {
@@ -45,11 +48,13 @@ public class Player : MonoBehaviour
             {
                 Debug.Log("碰到Nails");
                 currentFloor = collision.gameObject;
+                ModifyHp(-3);
             }
         } else if (collision.transform.tag == "Ceiling")
         {
             Debug.Log("碰到天花板");
             currentFloor.GetComponent<BoxCollider2D>().enabled = false;
+            ModifyHp(-3);
         }
     }
 
@@ -58,6 +63,34 @@ public class Player : MonoBehaviour
         if (collision.transform.tag == "DeathLine")
         {
             Debug.Log("Death!!!!");
+        }
+    }
+
+    void ModifyHp(int num)
+    {
+        Hp += num;
+        if(Hp > 10)
+        {
+            Hp = 10;
+        } else if(Hp < 0)
+        {
+            Hp = 0;
+        }
+        UpdateHpBar();
+    }
+
+    void UpdateHpBar()
+    {
+        for(int i = 0; i < HpBar.transform.childCount; i++)
+        {
+            if (Hp > i)
+            {
+                HpBar.transform.GetChild(i).gameObject.SetActive(true);
+            } else
+            {
+                HpBar.transform.GetChild(i).gameObject.SetActive(false);
+
+            }
         }
     }
 }
