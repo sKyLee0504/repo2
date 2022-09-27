@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+// 用text类型要引用UnityEngine.UI
+using UnityEngine.UI;
 using UnityEngine;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 
@@ -8,14 +10,19 @@ public class Player : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] int Hp;
     [SerializeField] GameObject HpBar;
+    [SerializeField] Text scoreText;
 
     // 创建目前脚下阶梯的变量
     GameObject currentFloor;
+    int score;
+    float scoreTime; 
 
     // Start is called before the first frame update
     void Start()
     {
         Hp = 10;
+        score = 0;
+        scoreTime = 0f;
     }
 
     // Update is called once per frame
@@ -29,7 +36,10 @@ public class Player : MonoBehaviour
         {
             transform.Translate(-moveSpeed * Time.deltaTime, 0, 0);
         }
-        
+
+        updateScore();
+
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -91,6 +101,18 @@ public class Player : MonoBehaviour
                 HpBar.transform.GetChild(i).gameObject.SetActive(false);
 
             }
+        }
+    }
+
+    void updateScore()
+    {
+        scoreTime += Time.deltaTime;
+        if(scoreTime > 2f)
+        {
+            score ++;
+            scoreTime = 0f;
+            // 修改ui文本显示内容
+            scoreText.text = "地下" + score.ToString() + "层";
         }
     }
 }
