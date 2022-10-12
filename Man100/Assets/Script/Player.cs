@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] int Hp;
     [SerializeField] GameObject HpBar;
     [SerializeField] Text scoreText;
+    [SerializeField] GameObject replay;
 
     // 创建目前脚下阶梯的变量
     GameObject currentFloor;
@@ -18,6 +20,7 @@ public class Player : MonoBehaviour
     float scoreTime; 
     Animator anim;
     SpriteRenderer render;
+    AudioSource deathSound;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +30,8 @@ public class Player : MonoBehaviour
         scoreTime = 0f;
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
+        deathSound = GetComponent<AudioSource>();
+        replay.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,6 +67,7 @@ public class Player : MonoBehaviour
                 Debug.Log("碰到Normal");
                 currentFloor = collision.gameObject;
                 ModifyHp(1);
+                collision.gameObject.GetComponent<AudioSource>().Play() ;
             }
         } else if (collision.transform.tag == "Nails")
         {
@@ -70,12 +76,16 @@ public class Player : MonoBehaviour
                 Debug.Log("碰到Nails");
                 currentFloor = collision.gameObject;
                 ModifyHp(-3);
+                anim.SetTrigger("hurt");
+                collision.gameObject.GetComponent<AudioSource>().Play();
             }
         } else if (collision.transform.tag == "Ceiling")
         {
             Debug.Log("碰到天花板");
             currentFloor.GetComponent<BoxCollider2D>().enabled = false;
             ModifyHp(-3);
+            anim.SetTrigger("hurt");
+            collision.gameObject.GetComponent<AudioSource>().Play();
         }
     }
 
@@ -84,6 +94,7 @@ public class Player : MonoBehaviour
         if (collision.transform.tag == "DeathLine")
         {
             Debug.Log("Death!!!!");
+            Die();
         }
     }
 
@@ -96,6 +107,7 @@ public class Player : MonoBehaviour
         } else if(Hp < 0)
         {
             Hp = 0;
+            Die();
         }
         UpdateHpBar();
     }
@@ -125,5 +137,18 @@ public class Player : MonoBehaviour
             // 修改ui文本显示内容
             scoreText.text = "地下" + score.ToString() + "层";
         }
+    }
+
+    void Die()
+    {
+        deathSound.Play();
+        Time.timeScale = 0f;
+        replay.SetActive(true);
+    }
+
+    public void Replay()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("SampleScene");
     }
 }
