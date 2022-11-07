@@ -23,6 +23,10 @@ public class Player : MonoBehaviour
     AudioSource deathSound;
 
     // Start is called before the first frame update
+    private void Reset()
+    {
+        Debug.LogFormat("ganmeobject:{0}", gameObject);
+    }
     void Start()
     {
         Hp = 10;
